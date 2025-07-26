@@ -1,0 +1,36 @@
+:root {
+  --primary-bg: #007bff;
+  --primary-bg-hover: #0056b3;
+  --primary-text: #ffffff;
+
+  --secondary-bg: #6c757d;
+  --secondary-bg-hover: #5a6268;
+  --secondary-text: #ffffff;
+
+  --outline-text: #007bff;
+  --outline-border: #007bff;
+  --outline-bg-hover: rgba(0, 123, 255, 0.1);
+
+  --spinner-color: #ffffff;
+}
+
+.dark {
+  --primary-bg: #0056b3;
+  --primary-bg-hover: #003f7f;
+  --primary-text: #ffffff;
+
+  --secondary-bg: #3e4347;
+  --secondary-bg-hover: #2d3135;
+  --secondary-text: #ffffff;
+
+  --outline-text: #4dabf7;
+  --outline-border: #4dabf7;
+  --outline-bg-hover: rgba(77, 171, 247, 0.1);
+
+  --spinner-color: #ffffff;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}

@@ -30,7 +30,9 @@ $disabled-bg: #f5f5f5;
   border: 1px solid $neutral-border;
   border-radius: 0.375rem;
   background-color: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
   &--focused {
     border-color: $primary-color;

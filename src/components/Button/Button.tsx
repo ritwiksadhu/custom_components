@@ -1,18 +1,19 @@
-import React from "react";
-import styles from "./Button.module.scss";
-import clsx from "clsx";
-import { type ButtonProps } from "./Button.props";
-import { Elements } from "@/interfaces";
+import React from 'react';
+import styles from './Button.module.scss';
+import clsx from 'clsx';
+import { type ButtonProps } from './Button.props';
+import { Elements } from '@/interfaces';
 
-const Button: React.FC<ButtonProps> = ({
-  variant = "primary",
-  size = "medium",
+export const Button: React.FC<ButtonProps> = ({
+  text = '',
+  variant = 'primary',
+  size = 'medium',
   isLoading = false,
   disabled = false,
   leftIcon,
   rightIcon,
   children,
-  as = "button",
+  as = 'button',
   className,
   ...rest
 }) => {
@@ -21,31 +22,24 @@ const Button: React.FC<ButtonProps> = ({
     styles[`button--${variant}`],
     styles[`button--${size}`],
     {
-      [styles["button--loading"]]: isLoading,
-      [styles["button--disabled"]]: disabled,
+      [styles['button--loading']]: isLoading,
+      [styles['button--disabled']]: disabled,
     },
-    className
+    className,
   );
 
   const content = (
     <>
       {isLoading && <span className={styles.spinner} />}
-      {!isLoading && leftIcon && (
-        <span className={styles.icon}>{leftIcon}</span>
-      )}
-      <span className={styles.text}>{children}</span>
-      {!isLoading && rightIcon && (
-        <span className={styles.icon}>{rightIcon}</span>
-      )}
+      {!isLoading && leftIcon && <span className={styles.icon}>{leftIcon}</span>}
+      <span className={styles.text}>{text || children}</span>
+      {!isLoading && rightIcon && <span className={styles.icon}>{rightIcon}</span>}
     </>
   );
 
   if (as === Elements.link) {
     return (
-      <a
-        className={classes}
-        {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-      >
+      <a className={classes} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>
         {content}
       </a>
     );
@@ -57,4 +51,3 @@ const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
-export default Button;
