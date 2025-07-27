@@ -1,7 +1,7 @@
-import { Button, Input } from '@/components';
-import './styles.css';
+import { Button, Input, ThemeSwitch } from '@/components';
 import { SearchBar } from '@/components';
 import type { SearchItem } from './interfaces';
+import { useEffect, useState } from 'react';
 
 const searchData: SearchItem[] = [
   {
@@ -25,9 +25,41 @@ const searchData: SearchItem[] = [
 ];
 
 export default function App() {
+  const [query, setQuery] = useState('');
+  const [filteredData, setFilteredData] = useState<SearchItem[]>([]);
+  const [keyboardNavigation, setKeyboardNavigation] = useState(false);
+  // const [loading, setLoading] = useState(false);
+
+  const handleOnChange = (value: string, keyboardNavigation: boolean) => {
+    setKeyboardNavigation(keyboardNavigation);
+    setQuery(value);
+  };
+
+  useEffect(() => {
+    console.log('Query changed:', query);
+    console.log('Keyboard navigation:', keyboardNavigation);
+    if (keyboardNavigation) return;
+    if (query.trim() === '') {
+      setFilteredData([]);
+      return;
+    }
+
+    // setLoading(true);
+    const timer = setTimeout(() => {
+      const filtered = searchData.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query.toLowerCase()) ||
+          item.description.toLowerCase().includes(query.toLowerCase()),
+      );
+      setFilteredData(filtered);
+      // setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
   const handleSearch = (item: SearchItem) => {
-    console.log('Selected Item:', item);
-    // You can now trigger API search, navigation, etc.
+    console.log('Searching for:', item);
   };
 
   return (
@@ -41,7 +73,16 @@ export default function App() {
         onKeyDown={() => {}}
         disabled={false}
       />
-      <SearchBar data={searchData} onSearch={handleSearch} label="abcd" />
+      <SearchBar
+        data={filteredData}
+        value={query}
+        // @ts-ignore
+        onChange={handleOnChange}
+        onSearch={handleSearch}
+        label="Search"
+      />
+
+      <ThemeSwitch />
     </div>
   );
 }

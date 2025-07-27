@@ -1,0 +1,118 @@
+.switch {
+  position: relative;
+  background-color: var(--switch-bg);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &--checked {
+    background-color: var(--switch-checked-bg);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &--small {
+    width: 36px;
+    height: 18px;
+
+    .thumb {
+      width: 14px;
+      height: 14px;
+      top: 2px;
+      left: 2px;
+    }
+
+    &.switch--checked .thumb {
+      transform: translateX(18px);
+    }
+
+    .icon {
+      width: 12px;
+      height: 12px;
+
+      &--on {
+        left: 3px;
+      }
+
+      &--off {
+        right: 3px;
+      }
+    }
+  }
+
+  &--medium {
+    width: 50px;
+    height: 26px;
+
+    .thumb {
+      width: 20px;
+      height: 20px;
+      top: 3px;
+      left: 3px;
+    }
+
+    &.switch--checked .thumb {
+      transform: translateX(24px);
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+
+      &--on {
+        left: 6px;
+      }
+
+      &--off {
+        right: 6px;
+      }
+    }
+  }
+
+  &--large {
+    width: 64px;
+    height: 32px;
+
+    .thumb {
+      width: 26px;
+      height: 26px;
+      top: 3px;
+      left: 3px;
+    }
+
+    &.switch--checked .thumb {
+      transform: translateX(32px);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+
+      &--on {
+        left: 8px;
+      }
+
+      &--off {
+        right: 8px;
+      }
+    }
+  }
+
+  .thumb {
+    position: absolute;
+    background-color: var(--switch-thumb-bg);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    pointer-events: none;
+  }
+}

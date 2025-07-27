@@ -1,3 +1,8 @@
+@import '../components/Button/button.global.scss';
+@import '../components/Input/input.global.scss';
+@import '../components/SearchBar/searchbar.global.scss';
+@import '../components/Switch/switch.global.scss';
+
 :root {
   --primary-bg: #007bff;
   --primary-bg-hover: #0056b3;
@@ -12,6 +17,12 @@
   --outline-bg-hover: rgba(0, 123, 255, 0.1);
 
   --spinner-color: #ffffff;
+
+  --body-bg: #f8f9fa;
+  --body-text: #212529;
+
+  --modal-bg: #ffffff;
+  --card-bg: #ffffff;
 }
 
 .dark {
@@ -28,9 +39,19 @@
   --outline-bg-hover: rgba(77, 171, 247, 0.1);
 
   --spinner-color: #ffffff;
+
+  --body-bg: #121212;
+  --body-text: #f1f1f1;
+
+  --modal-bg: #1f1f1f;
+  --card-bg: #1f1f1f;
+}
+
+body {
+  background-color: var(--body-bg);
+  color: var(--body-text);
 }
 
 .App {
   font-family: sans-serif;
-  text-align: center;
 }

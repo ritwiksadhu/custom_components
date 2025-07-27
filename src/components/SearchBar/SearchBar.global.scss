@@ -1,0 +1,17 @@
+:root {
+  --dropdown-bg: #ffffff;
+  --dropdown-border: #ccc;
+  --dropdown-active-bg: #d0e7ff;
+  --dropdown-hover-bg: #f0f0f0;
+  --dropdown-text: #212529;
+  --dropdown-description-text: #666;
+}
+
+.dark {
+  --dropdown-bg: #1f1f1f;
+  --dropdown-border: #444;
+  --dropdown-active-bg: #2b3a55;
+  --dropdown-hover-bg: #333;
+  --dropdown-text: #f1f1f1;
+  --dropdown-description-text: #aaa;
+}
