@@ -1,7 +1,8 @@
-import { Button, Input, ThemeSwitch } from '@/components';
+import { Button, DropdownButton, Input, ThemeSwitch } from '@/components';
 import { SearchBar } from '@/components';
-import type { SearchItem } from './interfaces';
+import type { DropdownItem, SearchItem } from './interfaces';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const searchData: SearchItem[] = [
   {
@@ -24,10 +25,24 @@ const searchData: SearchItem[] = [
   },
 ];
 
+const languageItems: DropdownItem[] = [
+  { id: 'en', label: 'English', value: 'en' },
+  { id: 'hi', label: 'Hindi', value: 'hi' },
+];
+
 export default function App() {
   const [query, setQuery] = useState('');
   const [filteredData, setFilteredData] = useState<SearchItem[]>([]);
   const [keyboardNavigation, setKeyboardNavigation] = useState(false);
+
+  const { t, i18n } = useTranslation();
+
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+
+  const handleLanguageSelect = (item: { id: string; label: string }) => {
+    i18n.changeLanguage(item.id);
+    setSelectedLanguage(item.id);
+  };
   // const [loading, setLoading] = useState(false);
 
   const handleOnChange = (value: string, keyboardNavigation: boolean) => {
@@ -66,7 +81,7 @@ export default function App() {
     <div className="App">
       <Button text={'hello world'} />
       <Input
-        label={'abcd'}
+        label={t('Welcome to React')}
         value={''}
         onChange={() => {}}
         // onFocus={() => {}}
@@ -83,6 +98,14 @@ export default function App() {
       />
 
       <ThemeSwitch />
+
+      <DropdownButton
+        items={languageItems}
+        selectedValue={selectedLanguage}
+        // @ts-ignore
+        onSelect={handleLanguageSelect}
+        label="Select Language"
+      />
     </div>
   );
 }

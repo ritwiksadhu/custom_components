@@ -1,0 +1,52 @@
+.text {
+  margin: 0;
+  padding: 0;
+}
+
+.primary {
+  color: var(--primary-bg);
+}
+
+.secondary {
+  color: var(--secondary-bg);
+}
+
+.outline {
+  color: var(--outline-text);
+}
+
+.error {
+  color: red;
+}
+
+.default {
+  color: var(--body-text);
+}
+
+.muted {
+  opacity: 0.6;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.align-right {
+  text-align: right;
+}
