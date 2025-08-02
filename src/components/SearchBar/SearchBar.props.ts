@@ -1,13 +1,20 @@
-import type { SearchItem } from '@/interfaces';
+import { type InputHTMLAttributes } from 'react';
+import { type OverrideProps } from '@/interfaces';
 
-export interface SearchBarProps {
-  data: SearchItem[];
-  value: string;
-  onChange: (value: string, keyboardNavigation?: Boolean) => void;
-  onSearch: (item: SearchItem) => void;
-  loading?: boolean;
+export interface SearchItem {
+  id: string;
+  title: string;
+  description?: string;
+  icon?: React.ReactNode;
+}
+
+interface BaseProps {
+  items: SearchItem[];
+  onSelect: (item: SearchItem) => void;
+  onChange?: (value: string) => void; // Custom onChange handler
   placeholder?: string;
   disabled?: boolean;
   className?: string;
-  label?: string;
 }
+
+export type SearchBarProps = OverrideProps<InputHTMLAttributes<HTMLInputElement>, BaseProps>;

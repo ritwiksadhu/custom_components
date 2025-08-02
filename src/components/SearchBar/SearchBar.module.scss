@@ -1,40 +1,66 @@
-.searchbar-wrapper {
+// SearchBar.module.scss
+.searchbarWrapper {
   position: relative;
   width: 100%;
 }
 
-.searchbar-dropdown {
+.searchbarInput {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--body-text);
+  font-size: 1rem;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+  &:focus {
+    border-color: var(--primary-bg);
+    box-shadow: 0 0 0 2px var(--input-focus-shadow);
+  }
+}
+
+.searchbarDropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
   right: 0;
   max-height: 300px;
   overflow-y: auto;
   background-color: var(--dropdown-bg);
   border: 1px solid var(--dropdown-border);
+  border-radius: 4px;
   z-index: 1000;
-  padding-left: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
-.searchbar-item {
+.searchbarItem {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
   cursor: pointer;
+  color: var(--dropdown-text);
+  background-color: transparent;
   transition: background 0.2s;
 
-  color: var(--dropdown-text);
-
-  &--active {
+  &.active {
     background-color: var(--dropdown-active-bg);
+    font-weight: 600;
   }
 
-  &--hovered {
+  &.focused {
     background-color: var(--dropdown-hover-bg);
   }
 
   &-icon {
     margin-right: 1rem;
+    display: flex;
+    align-items: center;
   }
 
   &-content {
@@ -50,6 +76,11 @@
   &-description {
     font-size: 0.85rem;
     color: var(--dropdown-description-text);
-    margin: 0.25rem 0 0;
+    margin-top: 0.25rem;
   }
+}
+
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
 }

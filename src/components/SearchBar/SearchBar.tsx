@@ -1,108 +1,146 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styles from './SearchBar.module.scss';
+// SearchBar.tsx
+import React, { useState, useRef, useEffect, type KeyboardEvent } from 'react';
 import clsx from 'clsx';
+import { type SearchBarProps } from './SearchBar.props';
+import styles from './SearchBar.module.scss';
 import { Input } from '@/components';
-import type { SearchBarProps } from './SearchBar.props';
 
 export const SearchBar: React.FC<SearchBarProps> = ({
-  data,
-  value,
-  onChange,
-  onSearch,
-  loading = false,
-  placeholder = '',
+  items,
+  onSelect,
+  placeholder = 'Search...',
   disabled = false,
   className,
-  label = '',
 }) => {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isKeyboardNavigating, setIsKeyboardNavigating] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  const filteredItems = items?.filter((item) =>
+    item.title.toLowerCase().includes(searchValue.toLowerCase()),
+  );
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setShowDropdown(false);
+        setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
+  useEffect(() => {
+    if (isOpen && hoveredIndex !== null && itemRefs.current[hoveredIndex]) {
+      itemRefs.current[hoveredIndex]?.scrollIntoView({ block: 'nearest' });
+    }
+  }, [hoveredIndex, isOpen]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    onChange(inputValue, false);
-    setShowDropdown(inputValue.trim().length >= 1);
-    setActiveIndex(-1);
+    setSearchValue(e.target.value);
+    setIsOpen(true);
     setHoveredIndex(null);
   };
 
-  const handleSelect = (item: (typeof data)[0]) => {
-    onSearch(item);
-    setShowDropdown(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      const nextIndex = Math.min(activeIndex + 1, data.length - 1);
-      setActiveIndex(nextIndex);
-      setHoveredIndex(null);
-      onChange(data[nextIndex]?.title || '', true);
+      setIsKeyboardNavigating(true);
+      setIsOpen(true);
+      setHoveredIndex((prev) => {
+        const next = prev === null ? 0 : (prev + 1) % filteredItems?.length;
+        return next;
+      });
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      const prevIndex = Math.max(activeIndex - 1, 0);
-      setActiveIndex(prevIndex);
-      setHoveredIndex(null);
-      onChange(data[prevIndex]?.title || '', true);
-    } else if (e.key === 'Enter' && activeIndex >= 0) {
-      handleSelect(data[activeIndex]);
+      setIsKeyboardNavigating(true);
+      setHoveredIndex((prev) => {
+        const next =
+          prev === null
+            ? filteredItems.length - 1
+            : (prev - 1 + filteredItems.length) % filteredItems?.length;
+        return next;
+      });
+    } else if (e.key === 'Enter' && hoveredIndex !== null) {
+      e.preventDefault();
+      handleSelect(filteredItems[hoveredIndex]);
+    } else if (e.key === 'Escape') {
+      setIsOpen(false);
     }
   };
 
+  const handleSelect = (item: (typeof items)[0]) => {
+    setSearchValue(item.title);
+    setIsOpen(false);
+    onSelect(item);
+  };
+
+  const handleMouseEnter = (index: number) => {
+    setIsKeyboardNavigating(false);
+    setHoveredIndex(index);
+  };
+
+  const getItemId = (index: number) => `searchbar-item-${index}`;
+
   return (
-    <div className={clsx(styles['searchbar-wrapper'], className)} ref={wrapperRef}>
+    <div
+      ref={wrapperRef}
+      className={clsx(styles.searchbarWrapper, className, { [styles.disabled]: disabled })}
+    >
       <Input
-        label={label}
-        value={value}
+        ref={inputRef}
+        value={searchValue}
+        placeholder={placeholder}
         onChange={handleInputChange}
-        focusCallback={() => value.length >= 1 && setShowDropdown(true)}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        placeholder={placeholder}
+        variant="default"
+        size="medium"
+        label=""
+        // focusCallback={() => setIsOpen(true)}
+        className={styles.searchbarInput}
       />
 
-      {showDropdown && (
-        <ul className={styles['searchbar-dropdown']}>
-          {loading ? (
-            <li className={styles['searchbar-loader']}>Loading...</li>
-          ) : (
-            data.map((item, index) => {
-              const isActive = index === activeIndex && hoveredIndex === null;
-              const isHovered = index === hoveredIndex;
-              return (
-                <li
-                  key={item.id}
-                  className={clsx(styles['searchbar-item'], {
-                    [styles['searchbar-item--active']]: isActive,
-                    [styles['searchbar-item--hovered']]: isHovered,
-                  })}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  onMouseDown={() => handleSelect(item)}
-                >
-                  <span className={styles['searchbar-item-icon']}>{item.icon}</span>
-                  <div className={styles['searchbar-item-content']}>
-                    <p className={styles['searchbar-item-title']}>{item.title}</p>
-                    <p className={styles['searchbar-item-description']}>{item.description}</p>
-                  </div>
-                </li>
-              );
-            })
-          )}
+      {isOpen && filteredItems.length > 0 && (
+        <ul
+          id="searchbar-dropdown"
+          className={styles.searchbarDropdown}
+          role="listbox"
+          aria-activedescendant={hoveredIndex !== null ? getItemId(hoveredIndex) : undefined}
+        >
+          {filteredItems.map((item, index) => (
+            <li
+              key={item.id}
+              id={getItemId(index)}
+              // ref={(el) => (itemRefs.current[index] = el)} TODO: Uncomment if you want to use refs for items
+              className={clsx(styles.searchbarItem, {
+                active: item.title === searchValue,
+                focused: isKeyboardNavigating && index === hoveredIndex,
+              })}
+              role="option"
+              aria-selected={item.title === searchValue}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onClick={() => handleSelect(item)}
+            >
+              {item.icon && <span className={styles['searchbarItem-icon']}>{item.icon}</span>}
+              <span className={styles['searchbarItem-content']}>
+                <span className={styles['searchbarItem-title']}>{item.title}</span>
+                {item.description && (
+                  <span className={styles['searchbarItem-description']}>{item.description}</span>
+                )}
+              </span>
+            </li>
+          ))}
         </ul>
       )}
     </div>
   );
 };
+
+SearchBar.displayName = 'SearchBar';
