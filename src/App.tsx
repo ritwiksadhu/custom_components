@@ -1,6 +1,6 @@
 import { Button, DropdownButton, Input, ThemeSwitch, SearchBar } from '@/components';
 import type { DropdownItem, SearchItem } from './interfaces';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const searchData: SearchItem[] = [

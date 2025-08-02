@@ -18,15 +18,30 @@ export const Switch: React.FC<SwitchProps> = ({
     onChange(!checked);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleToggle();
+    }
+  };
+
   return (
     <div
+      role="switch"
+      aria-checked={checked}
+      tabIndex={disabled ? -1 : 0}
+      onClick={handleToggle}
+      onKeyDown={handleKeyDown}
       className={clsx(
         styles.switch,
         styles[`switch--${size}`],
-        { [styles['switch--checked']]: checked, [styles['switch--disabled']]: disabled },
+        {
+          [styles['switch--checked']]: checked,
+          [styles['switch--disabled']]: disabled,
+        },
         className,
       )}
-      onClick={handleToggle}
     >
       {onIcon && <span className={clsx(styles.icon, styles['icon--on'])}>{onIcon}</span>}
       {offIcon && <span className={clsx(styles.icon, styles['icon--off'])}>{offIcon}</span>}
@@ -34,3 +49,5 @@ export const Switch: React.FC<SwitchProps> = ({
     </div>
   );
 };
+
+Switch.displayName = 'Switch';

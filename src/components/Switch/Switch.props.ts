@@ -1,11 +1,13 @@
-import type { Size } from '@/interfaces';
+import type { ReactNode } from 'react';
+import type { Size, Variant } from '@/interfaces';
 
 export interface SwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
-  onIcon?: React.ReactNode;
-  offIcon?: React.ReactNode;
+  onIcon?: ReactNode;
+  offIcon?: ReactNode;
   disabled?: boolean;
-  className?: string;
   size?: Size;
+  variant?: Variant; // Add more variants as needed
+  className?: string;
 }
