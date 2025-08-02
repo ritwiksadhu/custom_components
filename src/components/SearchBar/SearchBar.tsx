@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect, type KeyboardEvent } from 'react';
 import clsx from 'clsx';
 import { type SearchBarProps } from './SearchBar.props';
 import styles from './SearchBar.module.scss';
-import { Input } from '@/components';
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   items,
@@ -14,13 +13,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [isKeyboardNavigating, setIsKeyboardNavigating] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const listRef = useRef<HTMLUListElement>(null);
 
-  const filteredItems = items?.filter((item) =>
+  const filteredItems = items.filter((item) =>
     item.title.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
@@ -37,39 +35,35 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isOpen && hoveredIndex !== null && itemRefs.current[hoveredIndex]) {
-      itemRefs.current[hoveredIndex]?.scrollIntoView({ block: 'nearest' });
+    if (isOpen && focusedIndex !== null && listRef.current) {
+      const item = listRef.current.children[focusedIndex] as HTMLElement;
+      item?.scrollIntoView({ block: 'nearest' });
     }
-  }, [hoveredIndex, isOpen]);
+  }, [focusedIndex, isOpen]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
     setIsOpen(true);
-    setHoveredIndex(null);
+    setFocusedIndex(null);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setIsKeyboardNavigating(true);
       setIsOpen(true);
-      setHoveredIndex((prev) => {
-        const next = prev === null ? 0 : (prev + 1) % filteredItems?.length;
-        return next;
+      setFocusedIndex((prev) => {
+        if (prev === null) return 0;
+        return (prev + 1) % filteredItems.length;
       });
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setIsKeyboardNavigating(true);
-      setHoveredIndex((prev) => {
-        const next =
-          prev === null
-            ? filteredItems.length - 1
-            : (prev - 1 + filteredItems.length) % filteredItems?.length;
-        return next;
+      setFocusedIndex((prev) => {
+        if (prev === null) return filteredItems.length - 1;
+        return (prev - 1 + filteredItems.length) % filteredItems.length;
       });
-    } else if (e.key === 'Enter' && hoveredIndex !== null) {
+    } else if (e.key === 'Enter' && focusedIndex !== null) {
       e.preventDefault();
-      handleSelect(filteredItems[hoveredIndex]);
+      handleSelect(filteredItems[focusedIndex]);
     } else if (e.key === 'Escape') {
       setIsOpen(false);
     }
@@ -81,9 +75,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     onSelect(item);
   };
 
-  const handleMouseEnter = (index: number) => {
-    setIsKeyboardNavigating(false);
-    setHoveredIndex(index);
+  const handleItemMouseEnter = (index: number) => {
+    setFocusedIndex(index);
   };
 
   const getItemId = (index: number) => `searchbar-item-${index}`;
@@ -93,40 +86,40 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       ref={wrapperRef}
       className={clsx(styles.searchbarWrapper, className, { [styles.disabled]: disabled })}
     >
-      <Input
+      <input
         ref={inputRef}
-        value={searchValue}
+        type="text"
+        className={styles.searchbarInput}
         placeholder={placeholder}
+        value={searchValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        variant="default"
-        size="medium"
-        label=""
-        // focusCallback={() => setIsOpen(true)}
-        className={styles.searchbarInput}
+        aria-autocomplete="list"
+        aria-controls="searchbar-dropdown"
+        aria-expanded={isOpen}
       />
-
       {isOpen && filteredItems.length > 0 && (
         <ul
           id="searchbar-dropdown"
           className={styles.searchbarDropdown}
           role="listbox"
-          aria-activedescendant={hoveredIndex !== null ? getItemId(hoveredIndex) : undefined}
+          ref={listRef}
+          aria-activedescendant={focusedIndex !== null ? getItemId(focusedIndex) : undefined}
         >
           {filteredItems.map((item, index) => (
             <li
               key={item.id}
               id={getItemId(index)}
-              // ref={(el) => (itemRefs.current[index] = el)} TODO: Uncomment if you want to use refs for items
               className={clsx(styles.searchbarItem, {
-                active: item.title === searchValue,
-                focused: isKeyboardNavigating && index === hoveredIndex,
+                [styles.active]: item.title === searchValue,
+                [styles.focused]: index === focusedIndex,
               })}
               role="option"
-              aria-selected={item.title === searchValue}
-              onMouseEnter={() => handleMouseEnter(index)}
+              aria-selected={index === focusedIndex}
+              onMouseEnter={() => handleItemMouseEnter(index)}
               onClick={() => handleSelect(item)}
+              tabIndex={-1}
             >
               {item.icon && <span className={styles['searchbarItem-icon']}>{item.icon}</span>}
               <span className={styles['searchbarItem-content']}>

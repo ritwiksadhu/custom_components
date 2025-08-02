@@ -11,7 +11,6 @@ export interface SearchItem {
 interface BaseProps {
   items: SearchItem[];
   onSelect: (item: SearchItem) => void;
-  onChange?: (value: string) => void; // Custom onChange handler
   placeholder?: string;
   disabled?: boolean;
   className?: string;

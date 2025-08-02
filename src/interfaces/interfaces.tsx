@@ -1,7 +1,7 @@
 export interface SearchItem {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   icon?: React.ReactNode;
 }
 export type OverrideProps<T, U> = Omit<T, keyof U> & U;
