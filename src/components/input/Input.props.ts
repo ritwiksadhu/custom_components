@@ -1,12 +1,12 @@
 import type { InputHTMLAttributes } from 'react';
-import type { OverrideProps, Size, Variant } from '@/interfaces';
 
-interface CustomProps {
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
-  variant?: Variant;
-  size?: Size;
+  variant?: 'default' | 'error' | 'success';
+  size?: 'small' | 'medium' | 'large';
   errorText?: string;
-  focusCallback?: () => void;
+  successText?: string;
+  disabled?: boolean;
+  className?: string;
+  onFocusChange?: (isFocused: boolean) => void;
 }
-
-export type InputProps = OverrideProps<InputHTMLAttributes<HTMLInputElement>, CustomProps>;

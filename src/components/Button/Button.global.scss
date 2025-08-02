@@ -1,9 +1,31 @@
 :root {
   --button-primary-bg: #007bff;
   --button-primary-hover: #0056b3;
+  --button-primary-text: #ffffff;
+
+  --button-secondary-bg: #6c757d;
+  --button-secondary-hover: #5a6268;
+  --button-secondary-text: #ffffff;
+
+  --button-outline-text: #007bff;
+  --button-outline-border: #007bff;
+  --button-outline-hover-bg: rgba(0, 123, 255, 0.1);
+
+  --button-spinner-color: #ffffff;
 }
 
 .dark {
   --button-primary-bg: #0056b3;
   --button-primary-hover: #003f7f;
+  --button-primary-text: #ffffff;
+
+  --button-secondary-bg: #3e4347;
+  --button-secondary-hover: #2d3135;
+  --button-secondary-text: #ffffff;
+
+  --button-outline-text: #4dabf7;
+  --button-outline-border: #4dabf7;
+  --button-outline-hover-bg: rgba(77, 171, 247, 0.1);
+
+  --button-spinner-color: #ffffff;
 }

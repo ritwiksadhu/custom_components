@@ -34,6 +34,7 @@ export default function App() {
   const [query, setQuery] = useState('');
   const [filteredData, setFilteredData] = useState<SearchItem[]>([]);
   const [keyboardNavigation, setKeyboardNavigation] = useState(false);
+  const [input1, setInput1] = useState('');
 
   const { t, i18n } = useTranslation();
 
@@ -82,8 +83,8 @@ export default function App() {
       <Button text={'hello world'} />
       <Input
         label={t('Welcome to React')}
-        value={''}
-        onChange={() => {}}
+        value={input1}
+        onChange={(e) => setInput1(e.target.value)}
         // onFocus={() => {}}
         onKeyDown={() => {}}
         disabled={false}

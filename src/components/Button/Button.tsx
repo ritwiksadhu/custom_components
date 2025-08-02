@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from './Button.module.scss';
 import clsx from 'clsx';
+import styles from './Button.module.scss';
 import { type ButtonProps } from './Button.props';
 import { Elements } from '@/interfaces';
 
@@ -9,6 +9,8 @@ export const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   size = 'medium',
   isLoading = false,
+  isActive = false,
+  isToggle = false,
   disabled = false,
   leftIcon,
   rightIcon,
@@ -24,6 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
     {
       [styles['button--loading']]: isLoading,
       [styles['button--disabled']]: disabled,
+      [styles['button--active']]: isActive,
     },
     className,
   );
@@ -37,17 +40,17 @@ export const Button: React.FC<ButtonProps> = ({
     </>
   );
 
-  if (as === Elements.link) {
-    return (
-      <a className={classes} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>
-        {content}
-      </a>
-    );
-  }
+  const ButtonElement = as === Elements.link ? 'a' : 'button';
 
   return (
-    <button className={classes} disabled={disabled || isLoading} {...rest}>
+    <ButtonElement
+      className={classes}
+      disabled={disabled || isLoading}
+      aria-pressed={isToggle ? isActive : undefined}
+      type={as === Elements.button ? 'button' : undefined}
+      {...(rest as any)}
+    >
       {content}
-    </button>
+    </ButtonElement>
   );
 };
